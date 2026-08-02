@@ -525,7 +525,7 @@ run_interactive_menu() {
                 local count_selected=0
                 for state in "${MODULE_STATES[@]}"; do
                     if [[ "${state}" -eq 1 ]]; then
-                        ((count_selected++))
+                        count_selected=$((count_selected + 1))
                     fi
                 done
 
