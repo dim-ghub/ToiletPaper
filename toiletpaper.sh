@@ -78,7 +78,7 @@ print_banner() {
 EOF
     printf "${NC}"
     printf "${DIM}  Cleanse CachyOS and return to pristine Vanilla Arch Linux${NC}\n"
-    printf "${DIM}  Version: 1.1.0 | Pure Bash Architecture | Zero Dependencies${NC}\n\n"
+    printf "${DIM}  Version: 1.2.0 | Pure Bash Architecture | Zero Dependencies${NC}\n\n"
 }
 
 module_pacman_reversion() {

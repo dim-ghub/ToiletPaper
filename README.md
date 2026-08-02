@@ -39,9 +39,9 @@ ToiletPaper allows you to selectively enable or disable the following reversion 
 | :---: | :--- | :--- |
 | **1** | **Pacman & Repository Reversion** | Removes CachyOS repositories using official scripts, restores upstream core/pacman, and recursively cleans %INSTALLED_DB% database metadata from /var/lib/pacman/local/*/desc to prevent pacman corruption warnings. |
 | **2** | **Architecture & Package Resync** | Purges local pacman cache and forces a full reinstallation of all native packages (pacman -Qqn) from official Arch mirrors, downgrading x86-64-v3/v4 binaries back to standard x86-64. |
-| **3** | **Kernel, Bootloader & Theme Swap** | Installs upstream linux, linux-headers, and linux-firmware, purges linux-cachyos* kernels, removes Plymouth animation/hooks, purges GRUB/Limine CachyOS themes, and re-generates bootloader configurations. |
-| **4** | **Bloat, Shell & Config Purge** | Identifies and purges CachyOS packages (cachyos-settings, chwd, cachy-browser, etc.), wipes CachyOS Fish configs, and switches root and user default login shells back to /bin/bash. |
-| **5** | **OS Identity Restoration** | Reconstructs /etc/os-release with standard upstream Arch Linux release identifiers and resets legacy release tags. |
+| **3** | **Kernel, Bootloader & Theme Swap** | Installs upstream linux, linux-headers, and linux-firmware, purges linux-cachyos* kernels, removes Plymouth animation/hooks, purges GRUB/Limine CachyOS themes, updates GRUB_DISTRIBUTOR to Arch, and re-generates bootloader configurations. |
+| **4** | **Bloat & Shell Purge** | Identifies and purges CachyOS packages (cachyos-settings, chwd, cachy-browser, etc.), wipes CachyOS Fish configs, and switches root and user default login shells back to /bin/bash. |
+| **5** | **OS Identity Restoration** | Reconstructs /etc/os-release, /etc/issue, and /etc/issue.net with standard upstream Arch Linux release identifiers and resets legacy release tags. |
 | **6** | **KDE Plasma Reset [Optional]** | Reverts CachyOS KDE customizations (custom themes, panel layouts, taskbars) back to standard vanilla KDE Breeze defaults. Automatically creates timestamped backups of user configs before resetting. |
 | **7** | **Hyprland Reset & Noctalia Purge [Optional]** | Purges noctalia and noctalia-qs packages along with CachyOS Hyprland configs, safely backing up and restoring ~/.config/hypr to standard upstream defaults. |
 
@@ -59,7 +59,7 @@ ToiletPaper allows you to selectively enable or disable the following reversion 
 Run directly via curl and bash:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/dim-ghub/ToiletPaper/refs/heads/main/toiletpaper.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/dim-ghub/ToiletPaper/main/toiletpaper.sh | sudo bash
 ```
 
 #### Option B: Clone and Run
@@ -83,14 +83,14 @@ Upon launching, an interactive pure-Bash checklist will appear:
   |_|\___/|_|_|\___|\__|_|   \__,_| .__/ \___|_|   
                                   |_|              
   Cleanse CachyOS and return to pristine Vanilla Arch Linux
-  Version: 1.1.0 | Pure Bash Architecture | Zero Dependencies
+  Version: 1.2.0 | Pure Bash Architecture | Zero Dependencies
 
 Select the reversion modules you wish to execute:
 
   [X] 1) Pacman & Repository Reversion (Remove Cachy repos, scrub %INSTALLED_DB%)
   [X] 2) Architecture & Package Resync (Downgrade x86-64-v3/v4 to standard x86-64)
-  [X] 3) Kernel & Bootloader Swap (Install standard linux, remove cachyos kernels)
-  [X] 4) Bloat & Configuration Purge (Remove cachyos-settings, chwd, cachy-browser)
+  [X] 3) Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)
+  [X] 4) Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)
   [X] 5) OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)
   [X] 6) KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)
   [ ] 7) Hyprland Reset & Noctalia Purge [Optional] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)
