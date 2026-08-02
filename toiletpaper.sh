@@ -156,6 +156,38 @@ module_package_resync() {
     log_success "Module 2 completed: Package ecosystem synchronized to standard Arch Linux architecture."
 }
 
+module_os_identity() {
+    log_step "Module 5: OS Identity Restoration"
+
+    log_info "Writing vanilla Arch Linux identification to /etc/os-release..."
+    cat << 'EOF' > /etc/os-release
+NAME="Arch Linux"
+PRETTY_NAME="Arch Linux"
+ID=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;23;147;209"
+HOME_URL="https://archlinux.org/"
+DOCUMENTATION_URL="https://wiki.archlinux.org/"
+SUPPORT_URL="https://bbs.archlinux.org/"
+BUG_REPORT_URL="https://gitlab.archlinux.org/groups/archlinux/-/issues"
+PRIVACY_POLICY_URL="https://terms.archlinux.org/docs/privacy-policy/"
+LOGO=archlinux-logo
+EOF
+
+    rm -f /etc/cachyos-release /etc/lsb-release
+    touch /etc/arch-release
+
+    printf 'Arch Linux \\r (\\l)\n\n' > /etc/issue
+    printf 'Arch Linux\n' > /etc/issue.net
+
+    if [[ -f /etc/default/grub ]]; then
+        log_info "Updating GRUB_DISTRIBUTOR to 'Arch' in /etc/default/grub..."
+        sed -i -E 's/^[[:space:]]*GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="Arch"/g' /etc/default/grub 2>/dev/null || true
+    fi
+
+    log_success "Module 5 completed: OS identity restored to Arch Linux."
+}
+
 module_kernel_bootloader() {
     log_step "Module 3: Kernel, Bootloader, Themes & Plymouth Swap"
 
@@ -194,7 +226,7 @@ module_kernel_bootloader() {
         mkinitcpio -P
     fi
 
-    log_info "Removing GRUB and Limine CachyOS themes..."
+    log_info "Removing GRUB and Limine CachyOS themes and distributor branding..."
     local theme_pkgs
     theme_pkgs=$(pacman -Qq | grep -E '^cachyos-grub-theme|^grub-theme-cachyos|^cachyos-limine-theme|^limine-cachyos' || true)
     if [[ -n "${theme_pkgs}" ]]; then
@@ -203,14 +235,24 @@ module_kernel_bootloader() {
 
     if [[ -f /etc/default/grub ]]; then
         sed -i -E 's/^[[:space:]]*GRUB_THEME=/#GRUB_THEME=/g' /etc/default/grub 2>/dev/null || true
+        sed -i -E 's/^[[:space:]]*GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="Arch"/g' /etc/default/grub 2>/dev/null || true
     fi
     rm -rf /usr/share/grub/themes/cachyos* /boot/grub/themes/cachyos* /boot/limine/cachyos* 2>/dev/null || true
 
     for limine_cfg in /boot/limine.cfg /boot/limine/limine.cfg /boot/EFI/limine/limine.cfg; do
         if [[ -f "${limine_cfg}" ]]; then
             sed -i -E '/(cachyos|wallpaper|theme)/I d' "${limine_cfg}" 2>/dev/null || true
+            sed -i -E 's|//[[:space:]]*CachyOS.*|//Arch Linux|gI; s|comment:[[:space:]]*CachyOS.*|comment: Arch Linux|gI' "${limine_cfg}" 2>/dev/null || true
         fi
     done
+
+    if [[ -d /boot/loader/entries ]]; then
+        for entry_file in /boot/loader/entries/*.conf; do
+            if [[ -f "${entry_file}" ]]; then
+                sed -i -E 's/^title[[:space:]]+.*CachyOS.*/title Arch Linux/gI' "${entry_file}" 2>/dev/null || true
+            fi
+        done
+    fi
 
     log_info "Detecting and updating bootloader configuration..."
     local bootloader_updated=0
@@ -352,30 +394,6 @@ module_bloat_purge() {
     fi
 
     log_success "Module 4 completed: CachyOS bloat purged, Fish configs wiped, and shells switched to Bash."
-}
-
-module_os_identity() {
-    log_step "Module 5: OS Identity Restoration"
-
-    log_info "Writing vanilla Arch Linux identification to /etc/os-release..."
-    cat << 'EOF' > /etc/os-release
-NAME="Arch Linux"
-PRETTY_NAME="Arch Linux"
-ID=arch
-BUILD_ID=rolling
-ANSI_COLOR="38;2;23;147;209"
-HOME_URL="https://archlinux.org/"
-DOCUMENTATION_URL="https://wiki.archlinux.org/"
-SUPPORT_URL="https://bbs.archlinux.org/"
-BUG_REPORT_URL="https://gitlab.archlinux.org/groups/archlinux/-/issues"
-PRIVACY_POLICY_URL="https://terms.archlinux.org/docs/privacy-policy/"
-LOGO=archlinux-logo
-EOF
-
-    rm -f /etc/cachyos-release /etc/arch-release
-    touch /etc/arch-release
-
-    log_success "Module 5 completed: OS identity restored to Arch Linux."
 }
 
 module_kde_plasma_reversion() {
@@ -670,16 +688,16 @@ main() {
         module_package_resync
     fi
 
+    if [[ "${MODULE_STATES[4]}" -eq 1 ]]; then
+        module_os_identity
+    fi
+
     if [[ "${MODULE_STATES[2]}" -eq 1 ]]; then
         module_kernel_bootloader
     fi
 
     if [[ "${MODULE_STATES[3]}" -eq 1 ]]; then
         module_bloat_purge
-    fi
-
-    if [[ "${MODULE_STATES[4]}" -eq 1 ]]; then
-        module_os_identity
     fi
 
     if [[ "${MODULE_STATES[5]}" -eq 1 ]]; then
