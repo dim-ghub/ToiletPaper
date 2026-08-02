@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -u
 
 BOLD='\033[1m'
 DIM='\033[2m'
