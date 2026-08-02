@@ -157,7 +157,7 @@ module_package_resync() {
 }
 
 module_kernel_bootloader() {
-    log_step "Module 3: Kernel & Bootloader Swap"
+    log_step "Module 3: Kernel, Bootloader, Themes & Plymouth Swap"
 
     log_info "Installing standard Arch Linux kernel stack (linux, linux-headers, linux-firmware)..."
     pacman -S --needed --noconfirm linux linux-headers linux-firmware
@@ -175,10 +175,42 @@ module_kernel_bootloader() {
         log_info "No CachyOS kernels found installed."
     fi
 
+    log_info "Removing Plymouth animations and themes..."
+    local plymouth_pkgs
+    plymouth_pkgs=$(pacman -Qq | grep -E '^plymouth|^cachyos-plymouth' || true)
+    if [[ -n "${plymouth_pkgs}" ]]; then
+        pacman -Rns --noconfirm ${plymouth_pkgs} || pacman -Rdd --noconfirm ${plymouth_pkgs}
+    fi
+    systemctl disable plymouth-start.service plymouth-quit.service plymouth-quit-wait.service plymouth-read-write.service 2>/dev/null || true
+    rm -rf /etc/plymouth /usr/share/plymouth/themes/cachyos* 2>/dev/null || true
+
+    if [[ -f /etc/mkinitcpio.conf ]]; then
+        log_info "Scrubbing Plymouth hook from /etc/mkinitcpio.conf..."
+        sed -i -E 's/\bplymouth\b//g; s/[[:space:]]+/ /g; s/\( /\(/g; s/ \)/\)/g' /etc/mkinitcpio.conf
+    fi
+
     log_info "Regenerating initramfs images (mkinitcpio)..."
     if command -v mkinitcpio >/dev/null 2>&1; then
         mkinitcpio -P
     fi
+
+    log_info "Removing GRUB and Limine CachyOS themes..."
+    local theme_pkgs
+    theme_pkgs=$(pacman -Qq | grep -E '^cachyos-grub-theme|^grub-theme-cachyos|^cachyos-limine-theme|^limine-cachyos' || true)
+    if [[ -n "${theme_pkgs}" ]]; then
+        pacman -Rns --noconfirm ${theme_pkgs} || pacman -Rdd --noconfirm ${theme_pkgs}
+    fi
+
+    if [[ -f /etc/default/grub ]]; then
+        sed -i -E 's/^[[:space:]]*GRUB_THEME=/#GRUB_THEME=/g' /etc/default/grub 2>/dev/null || true
+    fi
+    rm -rf /usr/share/grub/themes/cachyos* /boot/grub/themes/cachyos* /boot/limine/cachyos* 2>/dev/null || true
+
+    for limine_cfg in /boot/limine.cfg /boot/limine/limine.cfg /boot/EFI/limine/limine.cfg; do
+        if [[ -f "${limine_cfg}" ]]; then
+            sed -i -E '/(cachyos|wallpaper|theme)/I d' "${limine_cfg}" 2>/dev/null || true
+        fi
+    done
 
     log_info "Detecting and updating bootloader configuration..."
     local bootloader_updated=0
@@ -195,6 +227,12 @@ module_kernel_bootloader() {
         bootloader_updated=1
     fi
 
+    if command -v limine >/dev/null 2>&1; then
+        log_info "Detected Limine bootloader. Updating limine configuration..."
+        limine enroll-config 2>/dev/null || true
+        bootloader_updated=1
+    fi
+
     if [[ "${bootloader_updated}" -eq 0 ]]; then
         log_warn "No recognized bootloader configuration (GRUB or systemd-boot) automatically updated."
         log_warn "Please ensure your custom bootloader is configured to boot the 'linux' kernel image."
@@ -202,11 +240,11 @@ module_kernel_bootloader() {
         log_success "Bootloader configuration updated successfully."
     fi
 
-    log_success "Module 3 completed: Standard Arch kernel stack installed and bootloader refreshed."
+    log_success "Module 3 completed: Standard Arch kernel installed, bootloader refreshed, and themes/plymouth purged."
 }
 
 module_bloat_purge() {
-    log_step "Module 4: Bloat & Configuration Purge"
+    log_step "Module 4: Bloat Purge, Shell Reversion & Fish Cleanup"
 
     local target_cachy_pkgs=(
         "cachyos-settings"
@@ -220,6 +258,14 @@ module_bloat_purge() {
         "cachyos-mirrorlist"
         "cachyos-v3-mirrorlist"
         "cachyos-v4-mirrorlist"
+        "cachyos-fish-config"
+        "fish-cachyos"
+        "cachyos-zsh-config"
+        "cachyos-grub-theme"
+        "cachyos-plymouth-theme"
+        "cachyos-limine-theme"
+        "plymouth-theme-cachyos"
+        "plymouth"
     )
 
     log_info "Scanning for CachyOS-specific packages..."
@@ -255,6 +301,46 @@ module_bloat_purge() {
         log_info "No CachyOS bloat packages detected on the system."
     fi
 
+    log_info "Resetting user and root login shells to /bin/bash..."
+    local root_shell
+    root_shell="$(getent passwd root | cut -d: -f7)"
+    if [[ "${root_shell}" != "/bin/bash" ]]; then
+        chsh -s /bin/bash root 2>/dev/null || usermod -s /bin/bash root 2>/dev/null || true
+        log_success "Root login shell switched to /bin/bash."
+    fi
+
+    local target_users
+    read -r -a target_users <<< "$(get_target_users)"
+    for user in "${target_users[@]}"; do
+        local u_shell
+        u_shell="$(getent passwd "${user}" | cut -d: -f7)"
+        if [[ "${u_shell}" != "/bin/bash" ]]; then
+            chsh -s /bin/bash "${user}" 2>/dev/null || usermod -s /bin/bash "${user}" 2>/dev/null || true
+            log_success "User '${user}' login shell switched to /bin/bash."
+        fi
+    done
+
+    log_info "Wiping CachyOS Fish configurations and vendor hooks..."
+    local timestamp
+    timestamp="$(date +%Y%m%d_%H%M%S)"
+
+    for user in "${target_users[@]}"; do
+        local user_home
+        user_home="$(getent passwd "${user}" | cut -d: -f6)"
+        if [[ -d "${user_home}/.config/fish" ]]; then
+            local fish_backup="${user_home}/.config/fish.cachyos.bak-${timestamp}"
+            mv "${user_home}/.config/fish" "${fish_backup}"
+            chown -R "${user}:$(id -gn "${user}")" "${fish_backup}" 2>/dev/null || true
+            log_info "Backed up '${user}' fish config to '${fish_backup}' and cleared active config."
+        fi
+    done
+
+    if [[ -d /root/.config/fish ]]; then
+        rm -rf /root/.config/fish
+    fi
+
+    rm -rf /etc/fish/config.fish /etc/fish/conf.d/cachyos* /usr/share/fish/vendor_conf.d/cachyos* /etc/fish/conf.d/cachy* 2>/dev/null || true
+
     log_info "Checking for orphaned packages (pacman -Qtdq)..."
     local orphans
     orphans=$(pacman -Qtdq || true)
@@ -265,7 +351,7 @@ module_bloat_purge() {
         log_info "No orphan packages found."
     fi
 
-    log_success "Module 4 completed: CachyOS packages and bloat successfully purged."
+    log_success "Module 4 completed: CachyOS bloat purged, Fish configs wiped, and shells switched to Bash."
 }
 
 module_os_identity() {
@@ -453,8 +539,8 @@ module_hyprland_reversion() {
 MODULE_TITLES=(
     "Pacman & Repository Reversion (Remove Cachy repos, scrub %INSTALLED_DB%)"
     "Architecture & Package Resync (Downgrade x86-64-v3/v4 to standard x86-64)"
-    "Kernel & Bootloader Swap (Install standard linux, remove cachyos kernels)"
-    "Bloat & Configuration Purge (Remove cachyos-settings, chwd, cachy-browser)"
+    "Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)"
+    "Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)"
     "OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)"
     "KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)"
     "Hyprland Reset & Noctalia Purge [Optional] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)"

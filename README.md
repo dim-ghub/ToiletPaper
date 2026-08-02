@@ -39,8 +39,8 @@ ToiletPaper allows you to selectively enable or disable the following reversion 
 | :---: | :--- | :--- |
 | **1** | **Pacman & Repository Reversion** | Removes CachyOS repositories using official scripts, restores upstream core/pacman, and recursively cleans %INSTALLED_DB% database metadata from /var/lib/pacman/local/*/desc to prevent pacman corruption warnings. |
 | **2** | **Architecture & Package Resync** | Purges local pacman cache and forces a full reinstallation of all native packages (pacman -Qqn) from official Arch mirrors, downgrading x86-64-v3/v4 binaries back to standard x86-64. |
-| **3** | **Kernel & Bootloader Swap** | Installs upstream linux, linux-headers, and linux-firmware, purges linux-cachyos* kernels, and re-generates GRUB (grub.cfg) or systemd-boot (bootctl) configurations. |
-| **4** | **Bloat & Configuration Purge** | Identifies and purges CachyOS branding, tools, and meta-packages (cachyos-settings, chwd, cachyos-hello, cachy-browser, cachyos-kernel-manager, etc.) alongside orphaned dependencies. |
+| **3** | **Kernel, Bootloader & Theme Swap** | Installs upstream linux, linux-headers, and linux-firmware, purges linux-cachyos* kernels, removes Plymouth animation/hooks, purges GRUB/Limine CachyOS themes, and re-generates bootloader configurations. |
+| **4** | **Bloat, Shell & Config Purge** | Identifies and purges CachyOS packages (cachyos-settings, chwd, cachy-browser, etc.), wipes CachyOS Fish configs, and switches root and user default login shells back to /bin/bash. |
 | **5** | **OS Identity Restoration** | Reconstructs /etc/os-release with standard upstream Arch Linux release identifiers and resets legacy release tags. |
 | **6** | **KDE Plasma Reset [Optional]** | Reverts CachyOS KDE customizations (custom themes, panel layouts, taskbars) back to standard vanilla KDE Breeze defaults. Automatically creates timestamped backups of user configs before resetting. |
 | **7** | **Hyprland Reset & Noctalia Purge [Optional]** | Purges noctalia and noctalia-qs packages along with CachyOS Hyprland configs, safely backing up and restoring ~/.config/hypr to standard upstream defaults. |
