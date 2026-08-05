@@ -67,7 +67,7 @@ get_target_users() {
 }
 
 print_banner() {
-    printf "${CYAN}${BOLD}"
+    printf "%b%b" "${CYAN}" "${BOLD}"
     cat << "EOF"
  _____     _ _      _   ____                       
 |_   _|__ (_) | ___| |_|  _ \ __ _ _ __   ___ _ __ 
@@ -76,9 +76,9 @@ print_banner() {
   |_|\___/|_|_|\___|\__|_|   \__,_| .__/ \___|_|   
                                   |_|              
 EOF
-    printf "${NC}"
-    printf "${DIM}  Cleanse CachyOS and return to pristine Vanilla Arch Linux${NC}\n"
-    printf "${DIM}  Version: 1.2.0 | Pure Bash Architecture | Zero Dependencies${NC}\n\n"
+    printf "%b" "${NC}"
+    printf "%b  Cleanse CachyOS and return to pristine Vanilla Arch Linux%b\n" "${DIM}" "${NC}"
+    printf "%b  Version: 1.2.0 | Pure Bash Architecture | Zero Dependencies%b\n\n" "${DIM}" "${NC}"
 }
 
 module_pacman_reversion() {
@@ -579,7 +579,7 @@ detect_desktop_defaults() {
 show_menu() {
     clear
     print_banner
-    printf "${BOLD}Select the reversion modules you wish to execute:${NC}\n\n"
+    printf "%bSelect the reversion modules you wish to execute:%b\n\n" "${BOLD}" "${NC}"
 
     for i in "${!MODULE_TITLES[@]}"; do
         local idx=$((i + 1))
@@ -593,10 +593,10 @@ show_menu() {
     done
 
     printf "\n"
-    printf "${DIM}----------------------------------------------------------------------${NC}\n"
-    printf "  ${BOLD}[1-7]${NC} Toggle module     ${BOLD}[A]${NC} Select All     ${BOLD}[N]${NC} Deselect All\n"
-    printf "  ${BOLD}[C/Enter]${NC} Confirm & Run   ${BOLD}[Q]${NC} Quit\n"
-    printf "${DIM}----------------------------------------------------------------------${NC}\n"
+    printf "%b----------------------------------------------------------------------%b\n" "${DIM}" "${NC}"
+    printf "  %b[1-7]%b Toggle module     %b[A]%b Select All     %b[N]%b Deselect All\n" "${BOLD}" "${NC}" "${BOLD}" "${NC}" "${BOLD}" "${NC}"
+    printf "  %b[C/Enter]%b Confirm & Run   %b[Q]%b Quit\n" "${BOLD}" "${NC}" "${BOLD}" "${NC}"
+    printf "%b----------------------------------------------------------------------%b\n" "${DIM}" "${NC}"
 }
 
 run_interactive_menu() {
@@ -634,18 +634,18 @@ run_interactive_menu() {
                 done
 
                 if [[ "${count_selected}" -eq 0 ]]; then
-                    printf "\n${YELLOW}[!] No modules selected. Please select at least one module or press Q to exit.${NC}\n"
+                    printf "\n%b[!] No modules selected. Please select at least one module or press Q to exit.%b\n" "${YELLOW}" "${NC}"
                     sleep 2
                     continue
                 fi
                 break
                 ;;
             q|quit|exit)
-                printf "\n${YELLOW}Operation cancelled by user. Exiting.${NC}\n"
+                printf "\n%bOperation cancelled by user. Exiting.%b\n" "${YELLOW}" "${NC}"
                 exit 0
                 ;;
             *)
-                printf "\n${RED}Invalid input: '%s'. Press ENTER to continue...${NC}" "${user_choice}"
+                printf "\n%bInvalid input: '%s'. Press ENTER to continue...%b" "${RED}" "${user_choice}" "${NC}"
                 read -r < /dev/tty
                 ;;
         esac
@@ -661,7 +661,7 @@ main() {
     clear
     print_banner
 
-    printf "${WHITE}${BOLD}Selected Modules for Execution:${NC}\n"
+    printf "%b%bSelected Modules for Execution:%b\n" "${WHITE}" "${BOLD}" "${NC}"
     for i in "${!MODULE_TITLES[@]}"; do
         local idx=$((i + 1))
         if [[ "${MODULE_STATES[$i]}" -eq 1 ]]; then
@@ -669,7 +669,7 @@ main() {
         fi
     done
 
-    printf "\n${YELLOW}${BOLD}[CAUTION] This script performs foundational changes to your system.${NC}\n"
+    printf "\n%b%b[CAUTION] This script performs foundational changes to your system.%b\n" "${YELLOW}" "${BOLD}" "${NC}"
     read -rp "Are you sure you want to begin the reversion process? [y/N]: " final_confirm < /dev/tty
     if [[ ! "${final_confirm,,}" =~ ^y(es)?$ ]]; then
         log_info "Reversion aborted by user."
@@ -712,12 +712,12 @@ main() {
     end_time="$(date +%s)"
     local duration=$((end_time - start_time))
 
-    printf "\n${GREEN}${BOLD}======================================================================${NC}\n"
-    printf "${GREEN}${BOLD} ToiletPaper Reversion Complete! (Elapsed: %ds)${NC}\n" "${duration}"
-    printf "${GREEN}${BOLD}======================================================================${NC}\n"
-    printf "${WHITE}Your system has been converted to vanilla Arch Linux.${NC}\n"
-    printf "${YELLOW}${BOLD}[RECOMMENDATION]${NC} Please reboot your machine now to boot into the standard Arch Linux kernel and environment:\n"
-    printf "  ${BOLD}systemctl reboot${NC}\n\n"
+    printf "\n%b%b======================================================================%b\n" "${GREEN}" "${BOLD}" "${NC}"
+    printf "%b%b ToiletPaper Reversion Complete! (Elapsed: %ds)%b\n" "${GREEN}" "${BOLD}" "${duration}" "${NC}"
+    printf "%b%b======================================================================%b\n" "${GREEN}" "${BOLD}" "${NC}"
+    printf "%bYour system has been converted to vanilla Arch Linux.%b\n" "${WHITE}" "${NC}"
+    printf "%b%b[RECOMMENDATION]%b Please reboot your machine now to boot into the standard Arch Linux kernel and environment:\n" "${YELLOW}" "${BOLD}" "${NC}"
+    printf "  %bsystemctl reboot%b\n\n" "${BOLD}" "${NC}"
 }
 
 main "$@"
