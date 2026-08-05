@@ -88,12 +88,12 @@ module_pacman_reversion() {
     tmp_dir="$(mktemp -d -t toiletpaper-repo-XXXXXX)"
     log_info "Working directory: ${tmp_dir}"
 
-    pushd "${tmp_dir}" >/dev/null
+    pushd "${tmp_dir}" >/dev/null || exit
 
     log_info "Fetching official CachyOS repository removal bundle..."
     if ! curl -fsSL https://mirror.cachyos.org/cachyos-repo.tar.xz -o cachyos-repo.tar.xz; then
         log_error "Failed to download cachyos-repo.tar.xz from mirror.cachyos.org"
-        popd >/dev/null
+        popd >/dev/null || exit
         rm -rf "${tmp_dir}"
         return 1
     fi
@@ -102,7 +102,7 @@ module_pacman_reversion() {
     tar -xvf cachyos-repo.tar.xz >/dev/null
 
     if [[ -d cachyos-repo ]]; then
-        cd cachyos-repo
+        cd cachyos-repo || exit
         log_info "Executing CachyOS repository removal..."
         if [[ -f ./cachyos-repo.sh ]]; then
             chmod +x ./cachyos-repo.sh
@@ -113,7 +113,7 @@ module_pacman_reversion() {
         cd ..
     fi
 
-    popd >/dev/null
+    popd >/dev/null || exit
     log_info "Cleaning up temporary repository installer files..."
     rm -rf "${tmp_dir}"
 
