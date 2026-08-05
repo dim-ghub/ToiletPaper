@@ -610,19 +610,19 @@ run_interactive_menu() {
             1|2|3|4|5|6|7)
                 local idx=$((user_choice - 1))
                 if [[ "${MODULE_STATES[$idx]}" -eq 1 ]]; then
-                    MODULE_STATES[$idx]=0
+                    MODULE_STATES[idx]=0
                 else
-                    MODULE_STATES[$idx]=1
+                    MODULE_STATES[idx]=1
                 fi
                 ;;
             a|all)
                 for i in "${!MODULE_STATES[@]}"; do
-                    MODULE_STATES[$i]=1
+                    MODULE_STATES[i]=1
                 done
                 ;;
             n|none)
                 for i in "${!MODULE_STATES[@]}"; do
-                    MODULE_STATES[$i]=0
+                    MODULE_STATES[i]=0
                 done
                 ;;
             c|run|go|"")
