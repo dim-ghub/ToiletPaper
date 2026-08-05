@@ -83,7 +83,7 @@ Upon launching, an interactive pure-Bash checklist will appear:
   |_|\___/|_|_|\___|\__|_|   \__,_| .__/ \___|_|   
                                   |_|              
   Cleanse CachyOS and return to pristine Vanilla Arch Linux
-  Version: 1.2.0 | Pure Bash Architecture | Zero Dependencies
+  Version: 1.2.1 | Pure Bash Architecture | Zero Dependencies
 
 Select the reversion modules you wish to execute:
 
