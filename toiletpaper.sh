@@ -201,7 +201,7 @@ module_kernel_bootloader() {
     if [[ -n "${cachy_kernels}" ]]; then
         log_info "Found CachyOS kernel packages:\n${cachy_kernels}"
         log_info "Removing CachyOS kernel packages..."
-        pacman -Rns --noconfirm ${cachy_kernels} || pacman -Rdd --noconfirm ${cachy_kernels}
+        pacman -Rns --noconfirm "${cachy_kernels}" || pacman -Rdd --noconfirm "${cachy_kernels}"
         log_success "CachyOS kernels successfully removed."
     else
         log_info "No CachyOS kernels found installed."
@@ -211,7 +211,7 @@ module_kernel_bootloader() {
     local plymouth_pkgs
     plymouth_pkgs=$(pacman -Qq | grep -E '^plymouth|^cachyos-plymouth' || true)
     if [[ -n "${plymouth_pkgs}" ]]; then
-        pacman -Rns --noconfirm ${plymouth_pkgs} || pacman -Rdd --noconfirm ${plymouth_pkgs}
+        pacman -Rns --noconfirm "${plymouth_pkgs}" || pacman -Rdd --noconfirm "${plymouth_pkgs}"
     fi
     systemctl disable plymouth-start.service plymouth-quit.service plymouth-quit-wait.service plymouth-read-write.service 2>/dev/null || true
     rm -rf /etc/plymouth /usr/share/plymouth/themes/cachyos* 2>/dev/null || true
@@ -230,7 +230,7 @@ module_kernel_bootloader() {
     local theme_pkgs
     theme_pkgs=$(pacman -Qq | grep -E '^cachyos-grub-theme|^grub-theme-cachyos|^cachyos-limine-theme|^limine-cachyos' || true)
     if [[ -n "${theme_pkgs}" ]]; then
-        pacman -Rns --noconfirm ${theme_pkgs} || pacman -Rdd --noconfirm ${theme_pkgs}
+        pacman -Rns --noconfirm "${theme_pkgs}" || pacman -Rdd --noconfirm "${theme_pkgs}"
     fi
 
     if [[ -f /etc/default/grub ]]; then
@@ -388,7 +388,7 @@ module_bloat_purge() {
     orphans=$(pacman -Qtdq || true)
     if [[ -n "${orphans}" ]]; then
         log_info "Purging orphan packages: ${orphans}"
-        pacman -Rns --noconfirm ${orphans} || true
+        pacman -Rns --noconfirm "${orphans}" || true
     else
         log_info "No orphan packages found."
     fi
