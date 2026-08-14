@@ -11,6 +11,7 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 NC='\033[0m'
+VER='1.3.0'
 
 log_info() {
     printf "${CYAN}[INFO]${NC} %s\n" "$*"
@@ -77,7 +78,7 @@ print_banner() {
 EOF
     printf "%b" "${NC}"
     printf "%b  Cleanse CachyOS and return to pristine Vanilla Arch Linux%b\n" "${DIM}" "${NC}"
-    printf "%b  Version: 1.2.1 | Pure Bash Architecture | Zero Dependencies%b\n\n" "${DIM}" "${NC}"
+    printf "%b  Version: %b | Pure Bash Architecture | Zero Dependencies%b\n\n" "${DIM}" "${VER}" "${NC}"
 }
 
 module_pacman_reversion() {
