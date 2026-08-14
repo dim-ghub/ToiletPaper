@@ -89,7 +89,7 @@ Select the reversion modules you wish to execute:
 
   [X] 1) Pacman & Repository Reversion (Remove Cachy repos, scrub %INSTALLED_DB%)
   [X] 2) Architecture & Package Resync (Downgrade x86-64-v3/v4 to standard x86-64)
-  [X] 3) Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)
+  [X] 3) Kernel, Bootloader & Theme Swap (Standard Linux kernel, purge Plymouth & GRUB/Limine themes)
   [X] 4) Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)
   [X] 5) OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)
   [X] 6) Hyprland Reset & Noctalia Purge [Recommended] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)
