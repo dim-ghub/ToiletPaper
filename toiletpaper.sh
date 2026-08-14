@@ -559,18 +559,18 @@ MODULE_TITLES=(
     "Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)"
     "Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)"
     "OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)"
+    "Hyprland Reset & Noctalia Purge [Recommended] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)"
     "KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)"
-    "Hyprland Reset & Noctalia Purge [Optional] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)"
 )
 
 MODULE_STATES=(1 1 1 1 1 0 0)
 
 detect_desktop_defaults() {
-    if pacman -Qq cachyos-kde-settings >/dev/null 2>&1 || pacman -Qq plasma-desktop >/dev/null 2>&1 || [[ -f /usr/bin/plasmashell ]]; then
+    if pacman -Qq noctalia >/dev/null 2>&1 || pacman -Qq noctalia-qs >/dev/null 2>&1 || pacman -Qq cachyos-hyprland-settings >/dev/null 2>&1 || [[ -f /usr/bin/Hyprland ]]; then
         MODULE_STATES[5]=1
     fi
 
-    if pacman -Qq noctalia >/dev/null 2>&1 || pacman -Qq noctalia-qs >/dev/null 2>&1 || pacman -Qq cachyos-hyprland-settings >/dev/null 2>&1 || [[ -f /usr/bin/Hyprland ]]; then
+    if pacman -Qq cachyos-kde-settings >/dev/null 2>&1 || pacman -Qq plasma-desktop >/dev/null 2>&1 || [[ -f /usr/bin/plasmashell ]]; then
         MODULE_STATES[6]=1
     fi
 }

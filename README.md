@@ -42,8 +42,8 @@ ToiletPaper allows you to selectively enable or disable the following reversion 
 | **3** | **Kernel, Bootloader & Theme Swap** | Installs upstream linux, linux-headers, and linux-firmware, purges linux-cachyos* kernels, removes Plymouth animation/hooks, purges GRUB/Limine CachyOS themes, updates GRUB_DISTRIBUTOR to Arch, and re-generates bootloader configurations. |
 | **4** | **Bloat & Shell Purge** | Identifies and purges CachyOS packages (cachyos-settings, chwd, cachy-browser, etc.), wipes CachyOS Fish configs, and switches root and user default login shells back to /bin/bash. |
 | **5** | **OS Identity Restoration** | Reconstructs /etc/os-release, /etc/issue, and /etc/issue.net with standard upstream Arch Linux release identifiers and resets legacy release tags. |
-| **6** | **KDE Plasma Reset [Optional]** | Reverts CachyOS KDE customizations (custom themes, panel layouts, taskbars) back to standard vanilla KDE Breeze defaults. Automatically creates timestamped backups of user configs before resetting. |
-| **7** | **Hyprland Reset & Noctalia Purge [Optional]** | Purges noctalia and noctalia-qs packages along with CachyOS Hyprland configs, safely backing up and restoring ~/.config/hypr to standard upstream defaults. |
+| **6** | **Hyprland Reset & Noctalia Purge [Recommended]** | Purges noctalia and noctalia-qs packages along with CachyOS Hyprland configs, safely backing up and restoring ~/.config/hypr to standard upstream defaults. |
+| **7** | **KDE Plasma Reset [Optional]** | Reverts CachyOS KDE customizations (custom themes, panel layouts, taskbars) back to standard vanilla KDE Breeze defaults. Automatically creates timestamped backups of user configs before resetting. |
 
 ---
 
@@ -92,8 +92,8 @@ Select the reversion modules you wish to execute:
   [X] 3) Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)
   [X] 4) Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)
   [X] 5) OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)
-  [X] 6) KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)
-  [ ] 7) Hyprland Reset & Noctalia Purge [Optional] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)
+  [X] 6) Hyprland Reset & Noctalia Purge [Recommended] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)
+  [ ] 7) KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)
 
 ----------------------------------------------------------------------
   [1-7] Toggle module     [A] Select All     [N] Deselect All
