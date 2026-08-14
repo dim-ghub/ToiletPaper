@@ -3,7 +3,7 @@
 > Cleanse CachyOS and return to a pristine, vanilla Arch Linux system.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Arch%20Linux-1793d1.svg)](https://archlinux.org)
+[![Platform: Arch Linux](https://img.shields.io/badge/Platform-Arch%20Linux-1793d1.svg)](https://archlinux.org)
 
 ToiletPaper is a lightweight, zero-dependency conversion utility engineered to
 cleanly revert an existing CachyOS installation back to standard, upstream
