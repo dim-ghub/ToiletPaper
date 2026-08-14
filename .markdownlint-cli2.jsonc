@@ -1,0 +1,11 @@
+{
+    "config": {
+        "default": true,
+        "line-length": {
+            "code_block_line_length": 120,
+            "tables": false
+        }
+    },
+    "globs": ["**/*.md"],
+    "ignores": ["node_modules", "vendor", "**/CHANGELOG.md"]
+}

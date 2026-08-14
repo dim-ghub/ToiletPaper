@@ -5,35 +5,52 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Arch%20Linux-1793d1.svg)](https://archlinux.org)
 
-ToiletPaper is a lightweight, zero-dependency conversion utility engineered to cleanly revert an existing CachyOS installation back to standard, upstream Arch Linux.
+ToiletPaper is a lightweight, zero-dependency conversion utility engineered to
+cleanly revert an existing CachyOS installation back to standard, upstream
+Arch Linux.
 
 ---
 
 ## Critical Disclaimer
 
-> **CAUTION: FOUNDATIONAL SYSTEM MODIFICATION**  
-> This tool performs fundamental, system-wide changes, including swapping repository configurations, replacing the kernel stack, force-downgrading package binaries to the baseline x86-64 architecture, resetting desktop/window manager configurations, and rewriting bootloader configurations.
-> 
-> * **Always create a full system backup** (e.g., using rsync, Timeshift, Snapper, or filesystem snapshots) before running this script.
-> * Ensure you have an active network connection and sufficient power before proceeding.
+> **CAUTION: FOUNDATIONAL SYSTEM MODIFICATION**
+>
+> This tool performs fundamental, system-wide changes, including swapping
+> repository configurations, replacing the kernel stack, force-downgrading
+> package binaries to the baseline x86-64 architecture, resetting desktop/window
+> manager configurations, and rewriting bootloader configurations.
+>
+> * **Always create a full system backup** (e.g., using rsync, Timeshift,
+>   Snapper, or filesystem snapshots) before running this script.
+> * Ensure you have an active network connection and sufficient power before
+>   proceeding.
 > * This software is provided "as is", without warranty of any kind.
 
 ---
 
 ## Purpose and Anti-Bloat Philosophy
 
-CachyOS provides custom kernel tweaks, optimized repositories (x86-64-v3/v4), custom CPU schedulers, desktop environment customizations, and specialized software stacks. While suitable for specific workloads, returning to vanilla Arch Linux is often desired for upstream reproducibility, baseline compatibility, or minimal bloat.
+CachyOS provides custom kernel tweaks, optimized repositories (x86-64-v3/v4),
+custom CPU schedulers, desktop environment customizations, and specialized
+software stacks. While suitable for specific workloads, returning to vanilla
+Arch Linux is often desired for upstream reproducibility, baseline
+compatibility, or minimal bloat.
 
 To stay strictly aligned with the anti-bloat philosophy:
-* **Zero External Dependencies:** No whiptail, dialog, yad, or Python runtimes required.
-* **Pure Bash Architecture:** The entire interactive checklist interface is built natively using Bash arrays, loops, and ANSI terminal codes.
-* **Modular Execution:** Granular control over which reversion stages to execute.
+
+* **Zero External Dependencies:** No whiptail, dialog, yad, or Python runtimes
+  required.
+* **Pure Bash Architecture:** The entire interactive checklist interface is
+  built natively using Bash arrays, loops, and ANSI terminal codes.
+* **Modular Execution:** Granular control over which reversion stages to
+  execute.
 
 ---
 
 ## Reversion Modules
 
-ToiletPaper allows you to selectively enable or disable the following reversion modules via an interactive checklist:
+ToiletPaper allows you to selectively enable or disable the following reversion
+modules via an interactive checklist:
 
 | Module | Name | Description |
 | :---: | :--- | :--- |
@@ -50,12 +67,14 @@ ToiletPaper allows you to selectively enable or disable the following reversion 
 ## Quickstart & Usage
 
 ### 1. Requirements
+
 * Root privileges (sudo or logged in as root).
 * Active internet connection (to fetch packages from official Arch Linux mirrors).
 
 ### 2. Execution Options
 
 #### Option A: One-Liner (Recommended)
+
 Run directly via curl and bash:
 
 ```bash
@@ -63,6 +82,7 @@ curl -sSL https://raw.githubusercontent.com/dim-ghub/ToiletPaper/main/toiletpape
 ```
 
 #### Option B: Clone and Run
+
 Clone this repository and run locally:
 
 ```bash
@@ -73,6 +93,7 @@ sudo ./toiletpaper.sh
 ```
 
 ### 3. Interactive Menu Controls
+
 Upon launching, an interactive pure-Bash checklist will appear:
 
 ```text
@@ -107,6 +128,7 @@ Select the reversion modules you wish to execute:
 * Press **`Q`** to abort without making changes.
 
 ### 4. Post-Reversion Steps
+
 Once the script completes, reboot your system into the upstream Arch Linux kernel:
 
 ```bash
@@ -114,6 +136,7 @@ sudo systemctl reboot
 ```
 
 Verify your converted system after rebooting:
+
 ```bash
 # Verify kernel
 uname -r
@@ -129,4 +152,5 @@ cat /etc/os-release
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE) - see the
+[LICENSE](LICENSE) file for details.

@@ -1,0 +1,14 @@
+{
+  "name": "toiletpaper",
+  "version": "1.3.0",
+  "private": true,
+  "scripts": {
+    "lint": "npm run lint:shellcheck && npm run lint:markdown",
+    "lint:shellcheck": "npx shellcheck toiletpaper.sh",
+    "lint:markdown": "npx markdownlint-cli2 ."
+  },
+  "devDependencies": {
+    "shellcheck": "^4.1.0",
+    "markdownlint-cli2": "^0.23.2"
+  }
+}
