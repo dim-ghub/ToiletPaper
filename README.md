@@ -94,7 +94,7 @@ sudo ./toiletpaper.sh
 
 ### 3. Interactive Menu Controls
 
-Upon launching, an interactive pure-Bash checklist will appear:
+Upon launching, an interactive, pure-Bash checklist will appear:
 
 ```text
  _____     _ _      _   ____                       
