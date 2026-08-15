@@ -92,7 +92,9 @@ chmod +x toiletpaper.sh
 sudo ./toiletpaper.sh
 ```
 
-### 3. Interactive Menu Controls
+### 3. Module Selection
+
+#### Option A: Interactive Menu Controls
 
 Upon launching, an interactive, pure-Bash checklist will appear:
 
@@ -126,6 +128,28 @@ Select the reversion modules you wish to execute:
 * Press **`A`** to enable all modules, or **`N`** to deselect all.
 * Press **`C`** (or **`ENTER`**) to confirm your selection and begin execution.
 * Press **`Q`** to abort without making changes.
+
+#### Option B: Command Line Flags
+
+In addition to the interactive menu, ToiletPaper can be configured through flags:
+
+```text
+usage: toiletpaper.sh [-h] [-c] [-f] [modules]
+
+options:
+  -h, --help        show this help message and exit
+  -c, --caelestia   perform the minimum required cleaning to install Caelestia
+  -f, --full        perform a full cleaning and revert to vanilla Arch Linux
+
+modules:
+  -b, --bootloader  perform kernel & boatloader theme swap
+  -i, --identity    perform OS identity restoration
+  -k, --kde         perform KDE Plasma reset
+  -n, --noctalia    perform Hyprland reset & Noctalia purge
+  -p, --package     perform architecture & package resync
+  -r, --repository  perform pacman & repository reversion
+  -s, --shell       perform bloat & shell purge
+```
 
 ### 4. Post-Reversion Steps
 
