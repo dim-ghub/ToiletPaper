@@ -77,7 +77,7 @@ print_banner() {
                                   |_|              
 EOF
     printf "%b" "${NC}"
-    printf "%b  Cleanse CachyOS and return to pristine Vanilla Arch Linux%b\n" "${DIM}" "${NC}"
+    printf "%b  Cleanse CachyOS and return to pristine vanilla Arch Linux%b\n" "${DIM}" "${NC}"
     printf "%b  Version: %b | Pure Bash Architecture | Zero Dependencies%b\n\n" "${DIM}" "${VER}" "${NC}"
 }
 
