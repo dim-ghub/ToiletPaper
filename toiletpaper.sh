@@ -8,9 +8,11 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 NC='\033[0m'
+VER='1.3.0'
 
 log_info() {
     printf "${CYAN}[INFO]${NC} %s\n" "$*"
@@ -76,8 +78,31 @@ print_banner() {
                                   |_|              
 EOF
     printf "%b" "${NC}"
-    printf "%b  Cleanse CachyOS and return to pristine Vanilla Arch Linux%b\n" "${DIM}" "${NC}"
-    printf "%b  Version: 1.2.1 | Pure Bash Architecture | Zero Dependencies%b\n\n" "${DIM}" "${NC}"
+    printf "%b  Cleanse CachyOS and return to pristine vanilla Arch Linux%b\n" "${DIM}" "${NC}"
+    printf "%b  Version: %b | Pure Bash Architecture | Zero Dependencies%b\n\n" "${DIM}" "${VER}" "${NC}"
+}
+
+print_help() {
+    print_banner
+
+    printf "%b%busage: %b%b$(basename %b)%b" "${CYAN}" "${BOLD}" "${MAGENTA}" "${BOLD}" "${0}" "${NC}"
+    printf " [%b-h%b]" "${GREEN}" "${NC}"
+    printf " [%b-c%b]" "${GREEN}" "${NC}"
+    printf " [%b-f%b]" "${GREEN}" "${NC}"
+    printf " [%bmodules%b]" "${GREEN}" "${NC}"
+    printf "\n\nRun ToiletPaper with no arguments for an interactive cleaning.\n\n"
+    printf "%b%boptions:%b\n" "${CYAN}" "${BOLD}" "${NC}"
+    printf "  %b%b-h%b, %b%b--help%b        show this help message and exit\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-c%b, %b%b--caelestia%b   perform the minimum required cleaning to install Caelestia\n\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-f%b, %b%b--full%b        perform a full cleaning and revert to vanilla Arch Linux\n\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "%b%bmodules:%b\n" "${CYAN}" "${BOLD}" "${NC}"
+    printf "  %b%b-b%b, %b%b--bootloader%b  perform kernel & boatloader theme swap\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-i%b, %b%b--identity%b    perform OS identity restoration\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-k%b, %b%b--kde%b         perform KDE Plasma reset\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-n%b, %b%b--noctalia%b    perform Hyprland reset & Noctalia purge\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-p%b, %b%b--package%b     perform architecture & package resync\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-r%b, %b%b--repository%b  perform pacman & repository reversion\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
+    printf "  %b%b-s%b, %b%b--shell%b       perform bloat & shell purge\n" "${GREEN}" "${BOLD}" "${NC}" "${GREEN}" "${BOLD}" "${NC}"
 }
 
 module_pacman_reversion() {
@@ -556,21 +581,21 @@ module_hyprland_reversion() {
 MODULE_TITLES=(
     "Pacman & Repository Reversion (Remove Cachy repos, scrub %INSTALLED_DB%)"
     "Architecture & Package Resync (Downgrade x86-64-v3/v4 to standard x86-64)"
-    "Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)"
+    "Kernel & Bootloader Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)"
     "Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)"
     "OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)"
+    "Hyprland Reset & Noctalia Purge [Recommended] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)"
     "KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)"
-    "Hyprland Reset & Noctalia Purge [Optional] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)"
 )
 
 MODULE_STATES=(1 1 1 1 1 0 0)
 
 detect_desktop_defaults() {
-    if pacman -Qq cachyos-kde-settings >/dev/null 2>&1 || pacman -Qq plasma-desktop >/dev/null 2>&1 || [[ -f /usr/bin/plasmashell ]]; then
+    if pacman -Qq noctalia >/dev/null 2>&1 || pacman -Qq noctalia-qs >/dev/null 2>&1 || pacman -Qq cachyos-hyprland-settings >/dev/null 2>&1 || [[ -f /usr/bin/Hyprland ]]; then
         MODULE_STATES[5]=1
     fi
 
-    if pacman -Qq noctalia >/dev/null 2>&1 || pacman -Qq noctalia-qs >/dev/null 2>&1 || pacman -Qq cachyos-hyprland-settings >/dev/null 2>&1 || [[ -f /usr/bin/Hyprland ]]; then
+    if pacman -Qq cachyos-kde-settings >/dev/null 2>&1 || pacman -Qq plasma-desktop >/dev/null 2>&1 || [[ -f /usr/bin/plasmashell ]]; then
         MODULE_STATES[6]=1
     fi
 }
@@ -651,11 +676,8 @@ run_interactive_menu() {
     done
 }
 
-main() {
+run_clean() {
     check_root
-    check_environment
-
-    run_interactive_menu
 
     clear
     print_banner
@@ -719,4 +741,63 @@ main() {
     printf "  %bsystemctl reboot%b\n\n" "${BOLD}" "${NC}"
 }
 
-main "$@"
+if [[ $# -gt 0 ]]; then
+    MODULE_STATES=("${MODULE_STATES[@]/1/0}")
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                print_help
+                shift
+                exit
+                ;;
+            -f|--full)
+                MODULE_STATES=("${MODULE_STATES[@]/0/1}")
+                shift
+                ;;
+            -c|--caelestia)
+                MODULE_STATES[5]=1
+                shift
+                ;;
+            -b|--bootloader)
+                MODULE_STATES[2]=1
+                shift
+                ;;
+            -i|--identity)
+                MODULE_STATES[4]=1
+                shift
+                ;;
+            -k|--kde)
+                MODULE_STATES[6]=1
+                shift
+                ;;
+            -n|--noctalia)
+                MODULE_STATES[5]=1
+                shift
+                ;;
+            -p|--package)
+                MODULE_STATES[1]=1
+                shift
+                ;;
+            -r|--repository)
+                MODULE_STATES[0]=1
+                shift
+                ;;
+            -s|--shell)
+                MODULE_STATES[3]=1
+                shift
+                ;;
+            *)
+                print_help
+                shift
+                exit
+                ;;
+        esac
+    done
+else
+    check_environment
+
+    run_interactive_menu
+fi
+
+run_clean

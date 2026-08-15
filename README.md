@@ -3,37 +3,54 @@
 > Cleanse CachyOS and return to a pristine, vanilla Arch Linux system.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Arch%20Linux-1793d1.svg)](https://archlinux.org)
+[![Platform: Arch Linux](https://img.shields.io/badge/Platform-Arch%20Linux-1793d1.svg)](https://archlinux.org)
 
-ToiletPaper is a lightweight, zero-dependency conversion utility engineered to cleanly revert an existing CachyOS installation back to standard, upstream Arch Linux.
+ToiletPaper is a lightweight, zero-dependency conversion utility engineered to
+cleanly revert an existing CachyOS installation back to standard, upstream
+Arch Linux.
 
 ---
 
 ## Critical Disclaimer
 
-> **CAUTION: FOUNDATIONAL SYSTEM MODIFICATION**  
-> This tool performs fundamental, system-wide changes, including swapping repository configurations, replacing the kernel stack, force-downgrading package binaries to the baseline x86-64 architecture, resetting desktop/window manager configurations, and rewriting bootloader configurations.
-> 
-> * **Always create a full system backup** (e.g., using rsync, Timeshift, Snapper, or filesystem snapshots) before running this script.
-> * Ensure you have an active network connection and sufficient power before proceeding.
+> **CAUTION: FOUNDATIONAL SYSTEM MODIFICATION**
+>
+> This tool performs fundamental, system-wide changes, including swapping
+> repository configurations, replacing the kernel stack, force-downgrading
+> package binaries to the baseline x86-64 architecture, resetting desktop/window
+> manager configurations, and rewriting bootloader configurations.
+>
+> * **Always create a full system backup** (e.g., using rsync, Timeshift,
+>   Snapper, or filesystem snapshots) before running this script.
+> * Ensure you have an active network connection and sufficient power before
+>   proceeding.
 > * This software is provided "as is", without warranty of any kind.
 
 ---
 
 ## Purpose and Anti-Bloat Philosophy
 
-CachyOS provides custom kernel tweaks, optimized repositories (x86-64-v3/v4), custom CPU schedulers, desktop environment customizations, and specialized software stacks. While suitable for specific workloads, returning to vanilla Arch Linux is often desired for upstream reproducibility, baseline compatibility, or minimal bloat.
+CachyOS provides custom kernel tweaks, optimized repositories (x86-64-v3/v4),
+custom CPU schedulers, desktop environment customizations, and specialized
+software stacks. While suitable for specific workloads, returning to vanilla
+Arch Linux is often desired for upstream reproducibility, baseline
+compatibility, or minimal bloat.
 
 To stay strictly aligned with the anti-bloat philosophy:
-* **Zero External Dependencies:** No whiptail, dialog, yad, or Python runtimes required.
-* **Pure Bash Architecture:** The entire interactive checklist interface is built natively using Bash arrays, loops, and ANSI terminal codes.
-* **Modular Execution:** Granular control over which reversion stages to execute.
+
+* **Zero External Dependencies:** No whiptail, dialog, yad, or Python runtimes
+  required.
+* **Pure Bash Architecture:** The entire interactive checklist interface is
+  built natively using Bash arrays, loops, and ANSI terminal codes.
+* **Modular Execution:** Granular control over which reversion stages to
+  execute.
 
 ---
 
 ## Reversion Modules
 
-ToiletPaper allows you to selectively enable or disable the following reversion modules via an interactive checklist:
+ToiletPaper allows you to selectively enable or disable the following reversion
+modules via an interactive checklist:
 
 | Module | Name | Description |
 | :---: | :--- | :--- |
@@ -42,20 +59,22 @@ ToiletPaper allows you to selectively enable or disable the following reversion 
 | **3** | **Kernel, Bootloader & Theme Swap** | Installs upstream linux, linux-headers, and linux-firmware, purges linux-cachyos* kernels, removes Plymouth animation/hooks, purges GRUB/Limine CachyOS themes, updates GRUB_DISTRIBUTOR to Arch, and re-generates bootloader configurations. |
 | **4** | **Bloat & Shell Purge** | Identifies and purges CachyOS packages (cachyos-settings, chwd, cachy-browser, etc.), wipes CachyOS Fish configs, and switches root and user default login shells back to /bin/bash. |
 | **5** | **OS Identity Restoration** | Reconstructs /etc/os-release, /etc/issue, and /etc/issue.net with standard upstream Arch Linux release identifiers and resets legacy release tags. |
-| **6** | **KDE Plasma Reset [Optional]** | Reverts CachyOS KDE customizations (custom themes, panel layouts, taskbars) back to standard vanilla KDE Breeze defaults. Automatically creates timestamped backups of user configs before resetting. |
-| **7** | **Hyprland Reset & Noctalia Purge [Optional]** | Purges noctalia and noctalia-qs packages along with CachyOS Hyprland configs, safely backing up and restoring ~/.config/hypr to standard upstream defaults. |
+| **6** | **Hyprland Reset & Noctalia Purge [Recommended]** | Purges noctalia and noctalia-qs packages along with CachyOS Hyprland configs, safely backing up and restoring ~/.config/hypr to standard upstream defaults. |
+| **7** | **KDE Plasma Reset [Optional]** | Reverts CachyOS KDE customizations (custom themes, panel layouts, taskbars) back to standard vanilla KDE Breeze defaults. Automatically creates timestamped backups of user configs before resetting. |
 
 ---
 
 ## Quickstart & Usage
 
 ### 1. Requirements
+
 * Root privileges (sudo or logged in as root).
 * Active internet connection (to fetch packages from official Arch Linux mirrors).
 
 ### 2. Execution Options
 
 #### Option A: One-Liner (Recommended)
+
 Run directly via curl and bash:
 
 ```bash
@@ -63,6 +82,7 @@ curl -sSL https://raw.githubusercontent.com/dim-ghub/ToiletPaper/main/toiletpape
 ```
 
 #### Option B: Clone and Run
+
 Clone this repository and run locally:
 
 ```bash
@@ -72,8 +92,11 @@ chmod +x toiletpaper.sh
 sudo ./toiletpaper.sh
 ```
 
-### 3. Interactive Menu Controls
-Upon launching, an interactive pure-Bash checklist will appear:
+### 3. Module Selection
+
+#### Option A: Interactive Menu Controls
+
+Upon launching, an interactive, pure-Bash checklist will appear:
 
 ```text
  _____     _ _      _   ____                       
@@ -83,17 +106,17 @@ Upon launching, an interactive pure-Bash checklist will appear:
   |_|\___/|_|_|\___|\__|_|   \__,_| .__/ \___|_|   
                                   |_|              
   Cleanse CachyOS and return to pristine Vanilla Arch Linux
-  Version: 1.2.1 | Pure Bash Architecture | Zero Dependencies
+  Version: 1.3.0 | Pure Bash Architecture | Zero Dependencies
 
 Select the reversion modules you wish to execute:
 
   [X] 1) Pacman & Repository Reversion (Remove Cachy repos, scrub %INSTALLED_DB%)
   [X] 2) Architecture & Package Resync (Downgrade x86-64-v3/v4 to standard x86-64)
-  [X] 3) Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)
+  [X] 3) Kernel, Bootloader & Theme Swap (Standard Linux kernel, purge Plymouth & GRUB/Limine themes)
   [X] 4) Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)
   [X] 5) OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)
-  [X] 6) KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)
-  [ ] 7) Hyprland Reset & Noctalia Purge [Optional] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)
+  [X] 6) Hyprland Reset & Noctalia Purge [Recommended] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)
+  [ ] 7) KDE Plasma Reset [Optional] (Revert themes, taskbar & applets to vanilla Breeze)
 
 ----------------------------------------------------------------------
   [1-7] Toggle module     [A] Select All     [N] Deselect All
@@ -106,7 +129,30 @@ Select the reversion modules you wish to execute:
 * Press **`C`** (or **`ENTER`**) to confirm your selection and begin execution.
 * Press **`Q`** to abort without making changes.
 
+#### Option B: Command Line Flags
+
+In addition to the interactive menu, ToiletPaper can be configured through flags:
+
+```text
+usage: toiletpaper.sh [-h] [-c] [-f] [modules]
+
+options:
+  -h, --help        show this help message and exit
+  -c, --caelestia   perform the minimum required cleaning to install Caelestia
+  -f, --full        perform a full cleaning and revert to vanilla Arch Linux
+
+modules:
+  -b, --bootloader  perform kernel & boatloader theme swap
+  -i, --identity    perform OS identity restoration
+  -k, --kde         perform KDE Plasma reset
+  -n, --noctalia    perform Hyprland reset & Noctalia purge
+  -p, --package     perform architecture & package resync
+  -r, --repository  perform pacman & repository reversion
+  -s, --shell       perform bloat & shell purge
+```
+
 ### 4. Post-Reversion Steps
+
 Once the script completes, reboot your system into the upstream Arch Linux kernel:
 
 ```bash
@@ -114,6 +160,7 @@ sudo systemctl reboot
 ```
 
 Verify your converted system after rebooting:
+
 ```bash
 # Verify kernel
 uname -r
@@ -129,4 +176,5 @@ cat /etc/os-release
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE) - see the
+[LICENSE](LICENSE) file for details.
