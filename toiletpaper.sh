@@ -557,7 +557,7 @@ module_hyprland_reversion() {
 MODULE_TITLES=(
     "Pacman & Repository Reversion (Remove Cachy repos, scrub %INSTALLED_DB%)"
     "Architecture & Package Resync (Downgrade x86-64-v3/v4 to standard x86-64)"
-    "Kernel, Bootloader & Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)"
+    "Kernel & Bootloader Theme Swap (Standard linux kernel, purge Plymouth & GRUB/Limine themes)"
     "Bloat & Shell Purge (Wipe fish config, switch shell to bash, purge cachyos packages)"
     "OS Identity Restoration (Overwrite /etc/os-release with Arch Linux)"
     "Hyprland Reset & Noctalia Purge [Recommended] (Reset ~/.config/hypr, purge noctalia/noctalia-qs)"
