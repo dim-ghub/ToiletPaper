@@ -142,7 +142,7 @@ options:
   -f, --full        perform a full cleaning and revert to vanilla Arch Linux
 
 modules:
-  -b, --bootloader  perform kernel & boatloader theme swap
+  -b, --bootloader  perform kernel & bootloader theme swap
   -i, --identity    perform OS identity restoration
   -k, --kde         perform KDE Plasma reset
   -n, --noctalia    perform Hyprland reset & Noctalia purge
